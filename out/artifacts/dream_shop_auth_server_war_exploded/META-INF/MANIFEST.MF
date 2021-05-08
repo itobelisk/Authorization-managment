@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: IntelliJ IDEA
+Built-By: shantkhayalian
+Build-Jdk: BellSoft Liberica JDK version 14.0.2
+Implementation-Title: dream-shop-auth-server
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: com.auth.server
+Main-Class: ${start-class}
+
