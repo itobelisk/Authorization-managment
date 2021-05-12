@@ -1,6 +1,7 @@
 package com.auth.server.payload;
 
 import com.auth.server.entity.webuser.WebUser;
+import com.auth.server.entity.webuser.response.WebUserResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,5 @@ import java.util.Collection;
 public class AuthResponse {
     private String accessToken;
     private String tokenType = "Bearer";
-    private WebUser webUser;
-    private Collection<? extends GrantedAuthority> role;
+    private WebUserResponse webUser;
 }

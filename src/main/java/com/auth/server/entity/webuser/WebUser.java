@@ -52,7 +52,7 @@ public class WebUser extends BaseEntity {
     private String imageUrl ="https://";
 
     @Column(nullable = false)
-    private Boolean emailVerified = false;
+    private Boolean emailVerified = true;
 
     @JsonIgnore
     private String password;

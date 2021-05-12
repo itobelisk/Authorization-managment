@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+
 import java.util.Collection;
 
 @Getter
@@ -15,11 +17,12 @@ import java.util.Collection;
 @AllArgsConstructor
 @Builder
 public class WebUserResponse {
+    private Long id;
     private String firstName;
 
     private String lastName;
 
-    private String name = "";
+    private String username = "";
 
     private String email;
 
@@ -39,5 +42,5 @@ public class WebUserResponse {
 
     private Boolean enable = true;
 
-    private Collection<Role> roles;
+    private Collection<? extends GrantedAuthority> roles;
 }

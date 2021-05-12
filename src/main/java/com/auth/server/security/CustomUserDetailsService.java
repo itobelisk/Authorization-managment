@@ -38,7 +38,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         WebUser user = userRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourcesNotFoundException("User", "id", id)
-        );
+                );
 
         return UserBuilder.create(user);
     }

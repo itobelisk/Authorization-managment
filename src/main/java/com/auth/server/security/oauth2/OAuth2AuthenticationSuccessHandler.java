@@ -1,7 +1,7 @@
 package com.auth.server.security.oauth2;
 
 import com.auth.server.config.AppProperties;
-import com.auth.server.exception.BadRequestException;
+import com.auth.server.exception.BadRequestsException;
 import com.auth.server.security.TokenProvider;
 import com.auth.server.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
@@ -57,7 +57,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                 .map(Cookie::getValue);
 
         if(redirectUri.isPresent() && !isAuthorizedRedirectUri(redirectUri.get())) {
-            throw new BadRequestException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
+            throw new BadRequestsException("Sorry! We've got an Unauthorized Redirect URI and can't proceed with the authentication");
         }
 
         String targetUrl = redirectUri.orElse(getDefaultTargetUrl());

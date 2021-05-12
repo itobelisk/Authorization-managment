@@ -5,8 +5,10 @@ import com.auth.server.annotations.CurrentUser;
 import com.auth.server.annotations.validator.JwtValidator;
 import com.auth.server.api.AuthApi;
 import com.auth.server.entity.webuser.WebUser;
+import com.auth.server.entity.webuser.response.WebUserResponse;
 import com.auth.server.enums.AuthProvider;
-import com.auth.server.exception.BadRequestException;
+import com.auth.server.exception.BadRequestsException;
+import com.auth.server.exception.RoleNameNotFoundException;
 import com.auth.server.exception.UserNotFoundException;
 import com.auth.server.exception.constance.ExceptionConstance;
 import com.auth.server.payload.ApiResponse;
@@ -67,30 +69,30 @@ public class AuthController implements AuthApi {
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
         return ResponseEntity.ok(
                 AuthResponse
-                .builder()
-                .accessToken(token)
-                        .tokenType("Bearer")
-                .webUser(WebUser
                         .builder()
-                        .email(userData.get().getEmail())
-                        .firstName(userData.get().getFirstName())
-                        .lastName(userData.get().getLastName())
-                        .imageUrl(userData.get().getImageUrl())
-                        .emailVerified(userData.get().getEmailVerified())
-                        .provider(userData.get().getProvider())
-                        .providerId(userData.get().getProviderId())
-                        .phoneNumber(userData.get().getPhoneNumber())
-                        .phoneNumberVerified(userData.get().getPhoneNumberVerified())
-                        .build())
-                        .role(authorities)
-                .build());
+                        .accessToken(token)
+                        .tokenType("Bearer")
+                        .webUser(WebUserResponse
+                                .builder()
+                                .id(userData.get().getId())
+                                .email(userData.get().getEmail())
+                                .firstName(userData.get().getFirstName())
+                                .lastName(userData.get().getLastName())
+                                .imageUrl(userData.get().getImageUrl())
+                                .emailVerified(userData.get().getEmailVerified())
+                                .provider(userData.get().getProvider())
+                                .providerId(userData.get().getProviderId())
+                                .phoneNumber(userData.get().getPhoneNumber())
+                                .phoneNumberVerified(userData.get().getPhoneNumberVerified())
+                                .roles(authorities)
+                                .build())
+                        .build());
     }
 
     @Override
     public ResponseEntity<?> registerUser(@Valid SignUpRequest signUpRequest) {
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new BadRequestException("Email address already in use.");
-        }
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) throw new BadRequestsException("Email address already in use.");
+        if(roleRepository.existsByName(signUpRequest.getRoles().getName()) == null) throw new RoleNameNotFoundException();
 
         // Creating user's account
         WebUser user = new WebUser();
@@ -101,7 +103,8 @@ public class AuthController implements AuthApi {
         user.setProvider(AuthProvider.local);
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_USER")));
+//        user.setRoles(Arrays.asList(roleRepository.findByName("ROLE_USER")));
+        user.setRoles(Arrays.asList(roleRepository.findByName(signUpRequest.getRoles().getName())));
         WebUser result = userRepository.save(user);
 
         URI location = ServletUriComponentsBuilder
