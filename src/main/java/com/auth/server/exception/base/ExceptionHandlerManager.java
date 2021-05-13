@@ -4,12 +4,15 @@ import com.auth.server.base.BaseResponse;
 import com.auth.server.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Date;
 
 @RestControllerAdvice
+@ResponseStatus(HttpStatus.BAD_REQUEST)
 public class ExceptionHandlerManager {
 
     @ExceptionHandler(UserNotFoundException.class)
@@ -38,6 +41,22 @@ public class ExceptionHandlerManager {
     @ExceptionHandler(RoleNameNotFoundException.class)
     public ResponseEntity<BaseResponse<?>> RoleNameNotFoundException(RoleNameNotFoundException roleNameNotFoundException){
         BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,roleNameNotFoundException.getMessage());
+        return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
+    }
+    @ExceptionHandler(OldPasswordErrorException.class)
+    public ResponseEntity<BaseResponse<?>> OldPasswordErrorException(OldPasswordErrorException oldPasswordErrorException){
+        BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,oldPasswordErrorException.getMessage());
+        return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<BaseResponse<?>> AuthenticationException(AuthenticationException authenticationException){
+        BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,authenticationException.getMessage());
+        return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
+    }
+    @ExceptionHandler(PasswordRulesException.class)
+    public ResponseEntity<BaseResponse<?>> PasswordRulesException(PasswordRulesException passwordRulesException){
+        BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,passwordRulesException.getMessage());
         return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
     }
 }

@@ -1,6 +1,7 @@
 package com.auth.server.entity.webuser;
 
 
+import com.auth.server.annotations.PasswordPolicy;
 import com.auth.server.entity.base.BaseEntity;
 import com.auth.server.entity.role.Role;
 import com.auth.server.enums.AuthProvider;
@@ -55,6 +56,7 @@ public class WebUser extends BaseEntity {
     private Boolean emailVerified = true;
 
     @JsonIgnore
+    @Column(nullable = false , unique = true)
     private String password;
 
     @NotNull

@@ -22,6 +22,7 @@ public class AppProperties {
     @NoArgsConstructor
     @Builder
     public static class Auth {
+        private String tokenLogoutSecret= "CBBDB1CA1572D92485DD03009C69D629";
         private String tokenSecret = "926D96C90030DD58429D2751AC1BDBBC";
         private long tokenExpirationMsec = 864000000;
     }

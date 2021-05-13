@@ -1,5 +1,6 @@
 package com.auth.server.payload;
 
+import com.auth.server.annotations.PasswordPolicy;
 import com.auth.server.entity.role.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,6 +28,7 @@ public class SignUpRequest {
     private String email;
 
     @NotBlank
+    @PasswordPolicy
     private String password;
 
     private Role roles;

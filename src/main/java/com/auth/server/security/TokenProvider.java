@@ -1,20 +1,11 @@
 package com.auth.server.security;
 
 import com.auth.server.config.AppProperties;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
+import com.auth.server.entity.webuser.WebUser;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
-import lombok.extern.slf4j.XSlf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +14,6 @@ import java.util.Date;
 @Service
 @Log4j2
 @Slf4j
-@XSlf4j
 @RequiredArgsConstructor
 public class TokenProvider {
 
@@ -40,6 +30,19 @@ public class TokenProvider {
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenSecret())
+                .compact();
+    }
+
+    public String createLogoutToken(WebUser webUser) {
+
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime());
+
+        return Jwts.builder()
+                .setSubject(Long.toString(webUser.getId()))
+                .setIssuedAt(new Date())
+                .setExpiration(expiryDate)
+                .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenLogoutSecret())
                 .compact();
     }
 
@@ -69,5 +72,4 @@ public class TokenProvider {
         }
         return false;
     }
-
 }

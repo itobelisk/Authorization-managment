@@ -1,5 +1,6 @@
 package com.auth.server.entity.webuser.request;
 
+import com.auth.server.annotations.PasswordPolicy;
 import com.auth.server.entity.role.Role;
 import com.auth.server.enums.AuthProvider;
 import lombok.AllArgsConstructor;
@@ -8,7 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
 import java.util.Collection;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -20,14 +23,16 @@ public class WebUserRequest {
     private String lastName;
 
     private String name = "";
-
+    @Email
     private String email;
 
     private String imageUrl = "https://";
 
     private Boolean emailVerified = false;
-
+    @PasswordPolicy
     private String password;
+    @PasswordPolicy
+    private String oldPassword;
 
     private AuthProvider provider = AuthProvider.local;
 

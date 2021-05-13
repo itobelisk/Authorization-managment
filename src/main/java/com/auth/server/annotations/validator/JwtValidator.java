@@ -17,6 +17,7 @@ public class JwtValidator {
     @Value("${tokenSecret}")
     private String jwtSecret;
 
+
     private final JwtUtils jwtUtils;
 
     @Autowired
@@ -39,6 +40,5 @@ public class JwtValidator {
         } catch (Exception e) {
             throw new NotAuthorizedUserAccessException();
         }
-
     }
 }
