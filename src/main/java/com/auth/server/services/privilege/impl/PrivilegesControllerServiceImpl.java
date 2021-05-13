@@ -20,7 +20,8 @@ public class PrivilegesControllerServiceImpl implements PrivilegeControllerServi
     private final PrivilegeMapper privilegeMapper;
 
     @Override
-    public BaseResponse<?> getAll() {
+    public BaseResponse<?> all(String accessToken) {
+
         List<PrivilegeResponse> response = null;
         try {
             response = privilegeMapper.toPrivilegeNameResponseList(privilegeRepository.findAll());

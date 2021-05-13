@@ -1,17 +1,16 @@
 package com.auth.server.controller;
 
 
-import com.auth.server.annotations.CurrentUser;
 import com.auth.server.annotations.binding.BindingManager;
-import com.auth.server.annotations.validator.JwtValidator;
+import com.auth.server.annotations.validator.UserValidator;
 import com.auth.server.api.AuthApi;
 import com.auth.server.entity.webuser.WebUser;
 import com.auth.server.entity.webuser.request.WebUserRequest;
 import com.auth.server.entity.webuser.response.WebUserResponse;
 import com.auth.server.enums.AuthProvider;
+import com.auth.server.exception.EmailAlreadyUsedException;
 import com.auth.server.exception.OldPasswordErrorException;
 import com.auth.server.exception.UserNotFoundException;
-import com.auth.server.exception.constance.ExceptionConstance;
 import com.auth.server.payload.ApiResponse;
 import com.auth.server.payload.AuthResponse;
 import com.auth.server.payload.LoginRequest;
@@ -36,7 +35,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -54,9 +52,8 @@ public class AuthController implements AuthApi {
 
     private final RoleRepository roleRepository;
 
-    private final JwtValidator jwtValidator;
-
     private final BindingManager bindingManager;
+    private final UserValidator userValidator;
 
 
     @Override
@@ -98,8 +95,7 @@ public class AuthController implements AuthApi {
     @Override
     public ResponseEntity<?> registerUser(@Valid SignUpRequest signUpRequest,BindingResult bindingResult) {
         bindingManager.bindingCheck(bindingResult);
-        if (userRepository.existsByEmail(signUpRequest.getEmail()))
-            throw new AssertionError("Email address already in use.");
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) throw new EmailAlreadyUsedException();
         if (roleRepository.existsByName(signUpRequest.getRoles().getName()) == null) throw new AssertionError();
 
         // Creating user's account
@@ -127,23 +123,21 @@ public class AuthController implements AuthApi {
 
     @Async
     @Override
-    public CompletableFuture<ResponseEntity<?>> checkUser(@CurrentUser String accessToken) {
-        getCurrentUser(accessToken);
+    public CompletableFuture<ResponseEntity<?>> checkUser(String accessToken) {
         return CompletableFuture.completedFuture(ResponseEntity.accepted()
                 .body(new ApiResponse(true, accessToken)));
     }
 
     @Override
     public ResponseEntity<?> logout(String accessToken) {
-        WebUser webUser = getCurrentUser(accessToken);
+        WebUser webUser = userValidator.getCurrentUser(accessToken);
         String token = tokenProvider.createLogoutToken(webUser);
         return token.equals(accessToken) ? ResponseEntity.accepted().body(new ApiResponse(false, "Logout not successful")) : ResponseEntity.accepted().body(new ApiResponse(true, "logout successfully."));
     }
 
     @Override
-
-    public ResponseEntity<?> changePass(String accessToken, WebUserRequest request, BindingResult bindingResult) {
-        WebUser webUser = getCurrentUser(accessToken);
+    public ResponseEntity<?> changePass( String accessToken, WebUserRequest request, BindingResult bindingResult) {
+        WebUser webUser = userValidator.getCurrentUser(accessToken);
         bindingManager.bindingCheck(bindingResult);
         WebUser oldUser = userRepository.findById(webUser.getId())
                 .orElseThrow(() -> new UserNotFoundException(
@@ -159,13 +153,5 @@ public class AuthController implements AuthApi {
         tokenProvider.createLogoutToken(webUser);
         return !passwordEncoder.matches(request.getOldPassword(), userWithNewPassword.getPassword()) ? ResponseEntity.accepted().body(new ApiResponse(false, "Password did not changed.")) : ResponseEntity.accepted().body(new ApiResponse(true, "password changed successfully."));
 
-    }
-
-    public WebUser getCurrentUser(String userAccessController) {
-        return userRepository
-                .findById((Long.parseLong(
-                        jwtValidator.validate(userAccessController))))
-                .orElseThrow(() -> new UserNotFoundException(
-                        ExceptionConstance.USER_NOT_FOUND_EXCEPTION));
     }
 }

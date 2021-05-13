@@ -16,7 +16,6 @@ public interface RoleApi {
     ResponseEntity<BaseResponse<?>> save(@RequestHeader(name = "Authorization") String accessToken,
                                          @RequestBody RoleRequest roleRequest);
 
-
     @GetMapping("/admin/all")
     ResponseEntity<BaseResponse<?>> all(@RequestHeader(name = "Authorization") String accessToken);
 

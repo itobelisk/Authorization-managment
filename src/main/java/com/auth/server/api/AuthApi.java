@@ -1,7 +1,6 @@
 package com.auth.server.api;
 
 import com.auth.server.entity.webuser.request.WebUserRequest;
-import com.auth.server.entity.webuser.response.WebUserResponse;
 import com.auth.server.payload.LoginRequest;
 import com.auth.server.payload.SignUpRequest;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +21,13 @@ public interface AuthApi {
                                    BindingResult bindingResult);
 
     @PostMapping("/check")
-    CompletableFuture<ResponseEntity<?>> checkUser(@RequestHeader(name = "Authorization") String accessToken);
+    CompletableFuture<ResponseEntity<?>> checkUser(@Valid @RequestHeader(name = "Authorization") String accessToken);
 
     @PostMapping("/logout")
-    ResponseEntity<?> logout(@RequestHeader(name = "Authorization") String accessToken);
+    ResponseEntity<?> logout(@Valid @RequestHeader(name = "Authorization") String accessToken);
 
     @PutMapping("/admin/change/password")
-    ResponseEntity<?> changePass(@RequestHeader(name = "Authorization") String accessToken,
+    ResponseEntity<?> changePass(@Valid @RequestHeader(name = "Authorization") String accessToken,
                                  @Valid @RequestBody WebUserRequest webUserRequest,
                                  BindingResult bindingResult);
 }

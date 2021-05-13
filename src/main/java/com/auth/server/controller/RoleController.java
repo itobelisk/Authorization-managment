@@ -1,6 +1,5 @@
 package com.auth.server.controller;
 
-import com.auth.server.annotations.CurrentUser;
 import com.auth.server.api.RoleApi;
 import com.auth.server.base.BaseResponse;
 import com.auth.server.entity.role.request.RoleRequest;
@@ -18,15 +17,14 @@ public class RoleController implements RoleApi {
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<BaseResponse<?>> save(@CurrentUser String accessToken, RoleRequest roleRequest) {
+    public ResponseEntity<BaseResponse<?>> save( String accessToken, RoleRequest roleRequest) {
         BaseResponse<?> response = roleControllerService.save(roleRequest);
         return new ResponseEntity<>(response,response.getMessage());
     }
 
-
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
-    public ResponseEntity<BaseResponse<?>> all(@CurrentUser String accessToken) {
+    public ResponseEntity<BaseResponse<?>> all(String accessToken) {
         BaseResponse<?> response = roleControllerService.all();
         return new ResponseEntity<>(response,response.getMessage());
     }
