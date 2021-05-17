@@ -70,7 +70,7 @@ public class RoleControllerServiceImpl implements RoleControllerService {
 
     @Override
     public BaseResponse<?> delete(Long id) {
-        if (!roleRepository.existsById(id)) throw new RoleAlreadyCreatedException();
+        if (!roleRepository.existsById(id)) throw new RoleIdNotFoundException();
         Role role = roleRepository.getOne(id);
         if (role.getName().toLowerCase().contains("admin")) throw new AdminCanNotBeDeleteException();
         roleRepository.deleteById(id);
@@ -83,6 +83,6 @@ public class RoleControllerServiceImpl implements RoleControllerService {
     private String getFinalName(RoleRequest roleRequest) {
         String finalRoleName = "";
         finalRoleName = roleRequest.getName().contains(" ") ? roleRequest.getName().replace(" ", "_") : roleRequest.getName().toUpperCase();
-        return ROLE_START + finalRoleName.toLowerCase();
+        return ROLE_START + finalRoleName.toUpperCase();
     }
 }

@@ -28,13 +28,13 @@ public class RoleController implements RoleApi {
         BaseResponse<?> response = roleControllerService.all();
         return new ResponseEntity<>(response,response.getMessage());
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public ResponseEntity<BaseResponse<?>> update(String accessToken, RoleRequest roleRequest) {
         BaseResponse<?> response = roleControllerService.update(roleRequest);
         return new ResponseEntity<>(response,response.getMessage());
     }
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public ResponseEntity<BaseResponse<?>> delete(String accessToken, Long id) {
         BaseResponse<?> response = roleControllerService.delete(id);
