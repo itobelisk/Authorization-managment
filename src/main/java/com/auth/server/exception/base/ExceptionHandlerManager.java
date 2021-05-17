@@ -77,4 +77,10 @@ public class ExceptionHandlerManager {
         BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,roleIdNotFoundException.getMessage());
         return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
     }
+
+    @ExceptionHandler(RoleNameNotExistException.class)
+    public ResponseEntity<BaseResponse<?>> RoleNameNotExistException(RoleNameNotExistException roleNameNotExistException){
+        BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,roleNameNotExistException.getMessage());
+        return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
+    }
 }

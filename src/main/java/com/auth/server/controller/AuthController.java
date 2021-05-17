@@ -10,6 +10,7 @@ import com.auth.server.entity.webuser.response.WebUserResponse;
 import com.auth.server.enums.AuthProvider;
 import com.auth.server.exception.EmailAlreadyUsedException;
 import com.auth.server.exception.OldPasswordErrorException;
+import com.auth.server.exception.RoleNameNotExistException;
 import com.auth.server.exception.UserNotFoundException;
 import com.auth.server.payload.ApiResponse;
 import com.auth.server.payload.AuthResponse;
@@ -96,7 +97,7 @@ public class AuthController implements AuthApi {
     public ResponseEntity<?> registerUser(@Valid SignUpRequest signUpRequest,BindingResult bindingResult) {
         bindingManager.bindingCheck(bindingResult);
         if (userRepository.existsByEmail(signUpRequest.getEmail())) throw new EmailAlreadyUsedException();
-        if (roleRepository.existsByName(signUpRequest.getRoles().getName()) == null) throw new AssertionError();
+        if (roleRepository.existsByName(signUpRequest.getRoles().getName()) == null) throw new RoleNameNotExistException();
 
         // Creating user's account
         WebUser user = new WebUser();
