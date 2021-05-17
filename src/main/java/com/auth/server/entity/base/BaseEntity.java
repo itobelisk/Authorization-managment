@@ -28,8 +28,10 @@ public class BaseEntity {
     private Long id;
 
     @CreationTimestamp
+    @Column(name= "created_date", nullable = false, updatable = false)
     private Date createdDate;
 
     @UpdateTimestamp
-    private Date lastModifiedDate;
+    @Column(name= "updated_date", nullable = false, updatable = false)
+    private Date updatedDate;
 }

@@ -8,4 +8,7 @@ public interface RoleControllerService {
 
     BaseResponse<?> all();
 
+    BaseResponse<?> update(RoleRequest roleRequest);
+
+    BaseResponse<?> delete(Long id);
 }

@@ -21,7 +21,7 @@ public class RoleMapper {
         return RoleResponse.builder()
                 .id(save.getId())
                 .creationDate(save.getCreatedDate())
-                .updatedDate(save.getLastModifiedDate())
+                .updatedDate(save.getUpdatedDate())
                 .name(save.getName())
                 .build();
     }
@@ -31,7 +31,7 @@ public class RoleMapper {
                 .map(e -> new RoleResponse(
                         e.getId(),
                         e.getCreatedDate(),
-                        e.getLastModifiedDate(),
+                        e.getUpdatedDate(),
                         FilterRoleName(e.getName())
                 ))
                 .collect(Collectors.toList());
@@ -39,5 +39,11 @@ public class RoleMapper {
 
     private String FilterRoleName(String name) {
         return name.substring(name.indexOf("_")+1);
+    }
+
+    public Role getRoleById(Role one) {
+        return Role.builder()
+                .name(one.getName())
+                .build();
     }
 }

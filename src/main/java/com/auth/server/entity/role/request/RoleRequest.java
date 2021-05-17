@@ -18,8 +18,6 @@ import java.util.Date;
 @Builder
 public class RoleRequest {
     private Long id;
-    private Date createdDate;
-    private Date updatedDate;
     private String name;
     private Collection<WebUserResponse> users;
     private Collection<PrivilegeResponse> privileges;

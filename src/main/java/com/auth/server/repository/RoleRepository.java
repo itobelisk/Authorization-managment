@@ -10,4 +10,5 @@ public interface RoleRepository extends JpaRepository<Role,Long> {
 
     @Query("select e from Role e where e.name like %?1%")
     Role existsByName(String name);
+
 }

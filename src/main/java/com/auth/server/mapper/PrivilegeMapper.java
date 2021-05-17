@@ -14,7 +14,7 @@ public class PrivilegeMapper {
                 .map(e -> new PrivilegeResponse(
                         e.getId(),
                         e.getCreatedDate().getTime(),
-                        e.getLastModifiedDate().getTime(),
+                        e.getUpdatedDate().getTime(),
                         e.getName()
                 )).collect(Collectors.toList());
     }

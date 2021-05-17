@@ -65,4 +65,16 @@ public class ExceptionHandlerManager {
         BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,emailAlreadyUsedException.getMessage());
         return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
     }
+
+    @ExceptionHandler(AdminCanNotBeDeleteException.class)
+    public ResponseEntity<BaseResponse<?>> AdminCanNotBeDeleteException(AdminCanNotBeDeleteException adminCanNotBeDeleteException){
+        BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,adminCanNotBeDeleteException.getMessage());
+        return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
+    }
+
+    @ExceptionHandler(RoleIdNotFoundException.class)
+    public ResponseEntity<BaseResponse<?>> RoleIdNotFoundException(RoleIdNotFoundException roleIdNotFoundException){
+        BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,roleIdNotFoundException.getMessage());
+        return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
+    }
 }
