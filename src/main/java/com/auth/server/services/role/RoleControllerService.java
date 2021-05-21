@@ -11,4 +11,6 @@ public interface RoleControllerService {
     BaseResponse<?> update(RoleRequest roleRequest);
 
     BaseResponse<?> delete(Long id);
+
+    BaseResponse<?> single(Long id);
 }

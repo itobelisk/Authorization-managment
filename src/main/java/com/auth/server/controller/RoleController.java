@@ -38,4 +38,10 @@ public class RoleController implements RoleApi {
         BaseResponse<?> response = roleControllerService.delete(id);
         return new ResponseEntity<>(response,response.getMessage());
     }
+
+    @Override
+    public ResponseEntity<BaseResponse<?>> single(String accessToken, Long id) {
+        BaseResponse<?> response = roleControllerService.single(id);
+        return new ResponseEntity<>(response,response.getMessage());
+    }
 }

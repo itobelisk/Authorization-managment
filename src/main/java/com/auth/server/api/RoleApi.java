@@ -23,4 +23,7 @@ public interface RoleApi {
     ResponseEntity<BaseResponse<?>> delete(@RequestHeader(name = "Authorization") String accessToken,
                                            @RequestParam Long  id);
 
+    @GetMapping("/single")
+    ResponseEntity<BaseResponse<?>> single(@RequestHeader(name = "Authorization") String accessToken,
+                                           @RequestParam Long  id);
 }

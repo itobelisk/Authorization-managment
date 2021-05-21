@@ -46,4 +46,13 @@ public class RoleMapper {
                 .name(one.getName())
                 .build();
     }
+
+    public RoleResponse toSingleRole(Role one) {
+        return RoleResponse.builder()
+                .id(one.getId())
+                .creationDate(one.getCreatedDate())
+                .updatedDate(one.getUpdatedDate())
+                .name(one.getName())
+                .build();
+    }
 }

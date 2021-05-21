@@ -80,6 +80,13 @@ public class RoleControllerServiceImpl implements RoleControllerService {
         return new BaseResponse<>(new Date(), true, HttpStatus.OK, "Delete successfully");
     }
 
+    @Override
+    public BaseResponse<?> single(Long id) {
+        if (!roleRepository.existsById(id)) throw new RoleIdNotFoundException();
+        RoleResponse role = roleMapper.toSingleRole(roleRepository.getOne(id));
+        return new BaseResponse<>(new Date(), true, HttpStatus.OK, role);
+    }
+
     private String getFinalName(RoleRequest roleRequest) {
         String finalRoleName = "";
         finalRoleName = roleRequest.getName().contains(" ") ? roleRequest.getName().replace(" ", "_") : roleRequest.getName().toUpperCase();
