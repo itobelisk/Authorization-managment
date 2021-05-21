@@ -16,25 +16,23 @@ public class RoleController implements RoleApi {
     private final RoleControllerServiceImpl roleControllerService;
 
     @Override
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<BaseResponse<?>> save( String accessToken, RoleRequest roleRequest) {
         BaseResponse<?> response = roleControllerService.save(roleRequest);
         return new ResponseEntity<>(response,response.getMessage());
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public ResponseEntity<BaseResponse<?>> all(String accessToken) {
         BaseResponse<?> response = roleControllerService.all();
         return new ResponseEntity<>(response,response.getMessage());
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     @Override
     public ResponseEntity<BaseResponse<?>> update(String accessToken, RoleRequest roleRequest) {
         BaseResponse<?> response = roleControllerService.update(roleRequest);
         return new ResponseEntity<>(response,response.getMessage());
     }
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+
     @Override
     public ResponseEntity<BaseResponse<?>> delete(String accessToken, Long id) {
         BaseResponse<?> response = roleControllerService.delete(id);

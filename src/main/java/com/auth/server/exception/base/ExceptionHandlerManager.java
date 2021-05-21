@@ -83,4 +83,10 @@ public class ExceptionHandlerManager {
         BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,roleNameNotExistException.getMessage());
         return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
     }
+
+    @ExceptionHandler(AdminCanNotBeUpdateException.class)
+    public ResponseEntity<BaseResponse<?>> AdminCanNotBeUpdateException(AdminCanNotBeUpdateException adminCanNotBeUpdateException){
+        BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,adminCanNotBeUpdateException.getMessage());
+        return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
+    }
 }

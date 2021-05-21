@@ -5,6 +5,7 @@ import com.auth.server.entity.role.Role;
 import com.auth.server.entity.role.request.RoleRequest;
 import com.auth.server.entity.role.response.RoleResponse;
 import com.auth.server.exception.AdminCanNotBeDeleteException;
+import com.auth.server.exception.AdminCanNotBeUpdateException;
 import com.auth.server.exception.RoleAlreadyCreatedException;
 import com.auth.server.exception.RoleIdNotFoundException;
 import com.auth.server.mapper.RoleMapper;
@@ -55,6 +56,7 @@ public class RoleControllerServiceImpl implements RoleControllerService {
     @Override
     public BaseResponse<?> update(RoleRequest roleRequest) {
         if (!roleRepository.existsById(roleRequest.getId())) throw new RoleIdNotFoundException();
+        if(roleRequest.getName().toLowerCase().contains("admin")) throw new AdminCanNotBeUpdateException();
         String roleName = getFinalName(roleRequest);
         RoleResponse response = null;
         try {
@@ -74,9 +76,7 @@ public class RoleControllerServiceImpl implements RoleControllerService {
         Role role = roleRepository.getOne(id);
         if (role.getName().toLowerCase().contains("admin")) throw new AdminCanNotBeDeleteException();
         roleRepository.deleteById(id);
-        if (roleRepository.existsById(id)) {
-            return new BaseResponse<>(new Date(), false, HttpStatus.BAD_REQUEST, "Not deleted");
-        }
+        if (roleRepository.existsById(id)) return new BaseResponse<>(new Date(), false, HttpStatus.BAD_REQUEST, "Not deleted");
         return new BaseResponse<>(new Date(), true, HttpStatus.OK, "Delete successfully");
     }
 
