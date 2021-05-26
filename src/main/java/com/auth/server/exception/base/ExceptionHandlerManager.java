@@ -89,4 +89,10 @@ public class ExceptionHandlerManager {
         BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,adminCanNotBeUpdateException.getMessage());
         return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
     }
+
+    @ExceptionHandler(CookiesNotFoundException.class)
+    public ResponseEntity<BaseResponse<?>> CookiesNotFoundException(CookiesNotFoundException cookiesNotFoundException){
+        BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,cookiesNotFoundException.getMessage());
+        return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
+    }
 }
