@@ -95,4 +95,10 @@ public class ExceptionHandlerManager {
         BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,cookiesNotFoundException.getMessage());
         return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<BaseResponse<?>> IllegalArgumentException(IllegalArgumentException illegalArgumentException){
+        BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,"Please login.");
+        return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
+    }
 }

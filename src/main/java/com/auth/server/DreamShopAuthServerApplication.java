@@ -3,6 +3,7 @@ package com.auth.server;
 import com.auth.server.config.AppProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.web.embedded.EmbeddedWebServerFactoryCustomizerAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -17,6 +18,7 @@ import javax.validation.constraints.NotNull;
 @EnableConfigurationProperties(AppProperties.class)
 @EnableEurekaClient
 @EnableJpaRepositories
+
 public class DreamShopAuthServerApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
@@ -38,5 +40,6 @@ public class DreamShopAuthServerApplication extends SpringBootServletInitializer
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return builder.sources(DreamShopAuthServerApplication.class);
     }
+
 
 }

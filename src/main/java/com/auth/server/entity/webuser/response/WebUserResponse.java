@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
@@ -42,5 +43,5 @@ public class WebUserResponse {
 
     private Boolean enable = true;
 
-    private Collection<? extends GrantedAuthority> roles;
+    private List<String> roles;
 }

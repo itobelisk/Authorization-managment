@@ -5,6 +5,7 @@ import com.auth.server.entity.webuser.request.WebUserRequest;
 import com.auth.server.payload.LoginRequest;
 import com.auth.server.payload.SignUpRequest;
 import org.springframework.boot.web.servlet.server.Session;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 public interface AuthApi {
 
     @PostMapping("/login")
-    ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletResponse response);
+    ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest);
 
     @PostMapping("/signup")
     ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest,
@@ -29,7 +30,7 @@ public interface AuthApi {
     CompletableFuture<ResponseEntity<?>> checkUser(@Valid @RequestHeader(name = "Authorization") String accessToken);
 
     @PostMapping("/logout")
-    ResponseEntity<?> logout(@Valid @RequestHeader(name = "Authorization") String accessToken);
+    ResponseEntity<?> logout(@RequestHeader HttpHeaders headers, @Valid @RequestHeader(name = "Cookie") String accessToken);
 
     @PutMapping("/admin/change/password")
     ResponseEntity<?> changePass(@Valid @RequestHeader(name = "Authorization") String accessToken,

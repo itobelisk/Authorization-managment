@@ -5,6 +5,7 @@ import com.auth.server.annotations.binding.BindingManager;
 import com.auth.server.annotations.validator.UserValidator;
 import com.auth.server.api.AuthApi;
 import com.auth.server.base.BaseResponse;
+import com.auth.server.entity.role.Role;
 import com.auth.server.entity.webuser.WebUser;
 import com.auth.server.entity.webuser.request.WebUserRequest;
 import com.auth.server.entity.webuser.response.WebUserResponse;
@@ -18,6 +19,7 @@ import com.auth.server.security.TokenProvider;
 import com.auth.server.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.collection.internal.PersistentBag;
 import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,11 +41,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.HttpCookie;
 import java.net.URI;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import static com.auth.server.util.CookieUtils.MAXAGE;
 
@@ -68,8 +68,8 @@ public class AuthController<T> implements AuthApi {
 
 
     @Override
-    public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest, HttpServletResponse response) {
-        HttpHeaders headers = new HttpHeaders();
+    public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest) {
+        HttpHeaders httpHeaders = new HttpHeaders();
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
@@ -81,10 +81,7 @@ public class AuthController<T> implements AuthApi {
         Optional<WebUser> userData = userRepository.findByEmail(loginRequest.getEmail());
         String token = tokenProvider.createToken(authentication);
         Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-        log.info("CookieUtils.addCookie(response, HttpHeaders.SET_COOKIE, token, MAXAGE);");
-        String tokenBearer = "Bearer ".concat(token);
-        headers.set(HttpHeaders.SET_COOKIE, CookieUtils.serialize(tokenBearer));
-        log.info("headers.set(HttpHeaders.SET_COOKIE, CookieUtils.serialize(response));");
+        log.info("authorities {} ", authorities);
         AuthResponse authResponse = AuthResponse
                 .builder()
                 .accessToken(token)
@@ -101,13 +98,13 @@ public class AuthController<T> implements AuthApi {
                         .providerId(userData.get().getProviderId())
                         .phoneNumber(userData.get().getPhoneNumber())
                         .phoneNumberVerified(userData.get().getPhoneNumberVerified())
-                        .roles(authorities)
+                        .roles(userData.get().getRoles().stream().map(Role::getName).collect(Collectors.toList()))
                         .build())
                 .build();
         log.info("AuthResponse authResponse = AuthResponse");
-
+        httpHeaders.set(HttpHeaders.SET_COOKIE, CookieUtils.serialize(token));
         return ResponseEntity.ok()
-                .headers(headers)
+                .headers(httpHeaders)
                 .body(authResponse);
 
     }
@@ -149,11 +146,20 @@ public class AuthController<T> implements AuthApi {
                 .body(new ApiResponse(true, accessToken)));
     }
 
+
     @Override
-    public ResponseEntity<?> logout(String accessToken) {
-        WebUser webUser = userValidator.getCurrentUser(accessToken);
+    public ResponseEntity<?> logout(HttpHeaders headers,String cookie) {
+
+        String accessTokens = CookieUtils.deserialize(cookie);
+        log.info("accessTokens {} ", accessTokens);
+        WebUser webUser = userValidator.getCurrentUser("Bearer " + accessTokens);
+        log.info("webUser {} ", webUser);
         String token = tokenProvider.createLogoutToken(webUser);
-        return token.equals(accessToken) ? ResponseEntity.accepted().body(new ApiResponse(false, "Logout not successful")) : ResponseEntity.accepted().body(new ApiResponse(true, "logout successfully."));
+        log.info("token {} ", token);
+        headers.keySet().remove("Cookie");
+        headers.set(HttpHeaders.SET_COOKIE, CookieUtils.serialize(token));
+        return token.equals(accessTokens) ? ResponseEntity.accepted().body(new ApiResponse(false, "Logout not successful")) :
+                ResponseEntity.ok().headers(headers).body(new ApiResponse(true, "logout successfully."));
     }
 
     @Override
@@ -180,21 +186,21 @@ public class AuthController<T> implements AuthApi {
     @Override
     public ResponseEntity<?> userDetails(String cookie) {
         String accessTokens = CookieUtils.deserialize(cookie);
-        WebUser webUser = userValidator.getCurrentUser(accessTokens);
-        Optional<WebUser> userData = userRepository.findByEmail(webUser.getEmail());
-        Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+        log.info("accessTokens {} ", accessTokens);
+        WebUser webUser = userValidator.getCurrentUser("Bearer " + accessTokens);
+        log.info("webUser {} ", webUser);
         return ResponseEntity.ok(
                 UserResponse
                         .builder()
                         .webUser(WebUserShortResponse
                                 .builder()
-                                .id(userData.get().getId())
-                                .email(userData.get().getEmail())
-                                .firstName(userData.get().getFirstName())
-                                .lastName(userData.get().getLastName())
-                                .imageUrl(userData.get().getImageUrl())
-                                .phoneNumber(userData.get().getPhoneNumber())
-                                .roles(authorities)
+                                .id(webUser.getId())
+                                .email(webUser.getEmail())
+                                .firstName(webUser.getFirstName())
+                                .lastName(webUser.getLastName())
+                                .imageUrl(webUser.getImageUrl())
+                                .phoneNumber(webUser.getPhoneNumber())
+                                .roles(webUser.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
                                 .build())
                         .build());
     }

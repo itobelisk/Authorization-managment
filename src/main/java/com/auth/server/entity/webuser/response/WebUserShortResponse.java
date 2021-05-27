@@ -1,9 +1,13 @@
 package com.auth.server.entity.webuser.response;
 
+import com.auth.server.entity.role.Role;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,5 +23,5 @@ public class WebUserShortResponse {
     private String imageUrl = "https://";
     private String phoneNumber = "";
 
-    private Collection<? extends GrantedAuthority> roles;
+    private List<String> roles;
 }

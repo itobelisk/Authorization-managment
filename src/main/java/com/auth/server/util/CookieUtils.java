@@ -52,17 +52,13 @@ public class CookieUtils {
                 .encodeToString(SerializationUtils.serialize(object));
     }
 
-    public static String serialize(String object) {
-        return Base64.getUrlEncoder()
-                .encodeToString(SerializationUtils.serialize(object));
-    }
 
     public static <T> T deserialize(Cookie cookie, Class<T> cls) {
         return cls.cast(SerializationUtils.deserialize(
                 Base64.getUrlDecoder().decode(cookie.getValue())));
     }
 
-    public static String deserialize(String cookie) {
+    public static String deserialize(String cookie) throws IllegalArgumentException{
         return String.valueOf(SerializationUtils.deserialize(
                 Base64.getUrlDecoder().decode(cookie)));
     }
