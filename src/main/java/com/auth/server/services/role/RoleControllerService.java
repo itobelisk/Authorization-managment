@@ -3,14 +3,16 @@ package com.auth.server.services.role;
 import com.auth.server.base.BaseResponse;
 import com.auth.server.entity.role.request.RoleRequest;
 
+import javax.servlet.http.HttpServletRequest;
+
 public interface RoleControllerService {
-    BaseResponse<?> save(RoleRequest roleRequest);
+    BaseResponse<?> save(RoleRequest roleRequest, String accessToken);
 
     BaseResponse<?> all();
 
-    BaseResponse<?> update(RoleRequest roleRequest);
+    BaseResponse<?> update(RoleRequest roleRequest, String accessToken);
 
-    BaseResponse<?> delete(Long id);
+    BaseResponse<?> delete(String accessToken, Long id);
 
-    BaseResponse<?> single(Long id);
+    BaseResponse<?> single(String accessToken, Long id);
 }
