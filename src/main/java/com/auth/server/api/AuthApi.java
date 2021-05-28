@@ -20,17 +20,19 @@ import java.util.concurrent.CompletableFuture;
 public interface AuthApi {
 
     @PostMapping("/login")
-    ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest,HttpServletResponse response);
+    ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest,
+                                       HttpServletResponse response);
 
     @PostMapping("/signup")
     ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest,
                                    BindingResult bindingResult);
 
     @PostMapping("/check")
-    CompletableFuture<ResponseEntity<?>> checkUser(@Valid @RequestHeader(name = "Cookie") String accessToken);
+    CompletableFuture<ResponseEntity<?>> checkUser();
 
     @PostMapping("/logout")
-    ResponseEntity<?> logout(HttpServletRequest request,HttpServletResponse response);
+    ResponseEntity<?> logout(HttpServletRequest request,
+                             HttpServletResponse response);
 
     @PutMapping("/admin/change/password")
     ResponseEntity<?> changePass(HttpServletRequest request,HttpServletResponse response,
@@ -38,5 +40,5 @@ public interface AuthApi {
                                  BindingResult bindingResult);
 
     @GetMapping("/user")
-    ResponseEntity<?> userDetails(HttpServletRequest  request);
+    ResponseEntity<?> userDetails();
 }

@@ -1,5 +1,7 @@
 package com.auth.server.util;
 
+import com.auth.server.exception.UnAuthorizesAccessException;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.util.SerializationUtils;
 
 import javax.servlet.http.Cookie;
@@ -12,6 +14,7 @@ public class CookieUtils {
     public static final Integer MAXAGE = 604800;
 
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
+        if(request.getCookies() == null) throw  new UnAuthorizesAccessException();
         Cookie[] cookies = request.getCookies();
 
         if (cookies != null && cookies.length > 0) {

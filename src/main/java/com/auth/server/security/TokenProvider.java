@@ -33,19 +33,6 @@ public class TokenProvider {
                 .compact();
     }
 
-//    public String createLogoutToken(WebUser webUser) {
-//
-//        Date now = new Date();
-//        Date expiryDate = new Date(now.getTime());
-//
-//        return Jwts.builder()
-//                .setSubject(Long.toString(webUser.getId()))
-//                .setIssuedAt(new Date())
-//                .setExpiration(expiryDate)
-//                .signWith(SignatureAlgorithm.HS512, appProperties.getAuth().getTokenLogoutSecret())
-//                .compact();
-//    }
-
     public Long getUserIdFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(appProperties.getAuth().getTokenSecret())

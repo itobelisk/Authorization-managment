@@ -16,6 +16,7 @@ import com.auth.server.repository.RoleRepository;
 import com.auth.server.repository.WebUserRepository;
 import com.auth.server.security.TokenProvider;
 import com.auth.server.util.CookieUtils;
+import com.auth.server.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +61,7 @@ public class AuthController<T> implements AuthApi {
 
     private final BindingManager bindingManager;
 
-    private final UserValidator userValidator;
+    private final UserUtils userUtils;
 
 
     @SneakyThrows
@@ -137,13 +138,10 @@ public class AuthController<T> implements AuthApi {
 
     @Async
     @Override
-    public CompletableFuture<ResponseEntity<?>> checkUser(String cookie) {
-        String accessTokens = CookieUtils.deserialize(cookie);
-        log.info("accessTokens {} ", accessTokens);
-        WebUser webUser = userValidator.getCurrentUser("Bearer " + accessTokens);
-        log.info("webUser {} ", webUser);
+    public CompletableFuture<ResponseEntity<?>> checkUser() {
+        WebUser webUser = userUtils.getUserId();
         return CompletableFuture.completedFuture(ResponseEntity.accepted()
-                .body(new ApiResponse(true, accessTokens)));
+                .body(new ApiResponse(true, webUser.getEmail())));
     }
 
 
@@ -152,9 +150,7 @@ public class AuthController<T> implements AuthApi {
 
         CookieUtils.deleteCookie(request, response, "Set-Cookie");
         return  ResponseEntity.ok()
-                        .body(
-                                new ApiResponse(true, "logout successfully.")
-                        );
+                        .body(new ApiResponse(true, "logout successfully."));
     }
 
     @Override
@@ -162,12 +158,7 @@ public class AuthController<T> implements AuthApi {
                                         HttpServletResponse response,
                                         WebUserRequest webUserRequest,
                                         BindingResult bindingResult) {
-        Optional<Cookie> cookies = CookieUtils.getCookie(request, "Set-Cookie");
-        Object accessTokens = CookieUtils.deserialize(cookies.get());
-        log.info("accessTokens {} ", accessTokens);
-        WebUser webUser = userValidator.getCurrentUser("Bearer " + accessTokens);
-        log.info("webUser {} ", webUser);
-
+        WebUser webUser = userUtils.getUserId();
         bindingManager.bindingCheck(bindingResult);
         WebUser oldUser = userRepository.findById(webUser.getId())
                 .orElseThrow(() -> new UserNotFoundException(
@@ -182,16 +173,15 @@ public class AuthController<T> implements AuthApi {
                 .orElseThrow(() -> new UserNotFoundException(
                         "User id not found"));
         CookieUtils.deleteCookie(request,response,"Set-Cookie");
-        return !passwordEncoder.matches(webUserRequest.getOldPassword(), userWithNewPassword.getPassword()) ? ResponseEntity.accepted().body(new ApiResponse(false, "Password did not changed.")) : ResponseEntity.accepted().body(new ApiResponse(true, "password changed successfully."));
+        return !passwordEncoder.matches(webUserRequest.getOldPassword(), userWithNewPassword.getPassword()) ?
+                ResponseEntity.accepted().body(new ApiResponse(false, "Password did not changed.")) :
+                ResponseEntity.accepted().body(new ApiResponse(true, "password changed successfully."));
 
     }
 
     @Override
-    public ResponseEntity<?> userDetails(HttpServletRequest request) {
-        Optional<Cookie> cookies = CookieUtils.getCookie(request, "Set-Cookie");
-        Object accessTokens = CookieUtils.deserialize(cookies.get());
-        log.info("accessTokens {} ", accessTokens);
-        WebUser webUser = userValidator.getCurrentUser("Bearer " + accessTokens);
+    public ResponseEntity<?> userDetails() {
+        WebUser webUser = userUtils.getUserId();
         log.info("webUser {} ", webUser);
         return ResponseEntity.ok(
                 UserResponse

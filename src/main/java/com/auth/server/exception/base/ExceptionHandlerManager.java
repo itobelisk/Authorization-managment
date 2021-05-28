@@ -98,7 +98,13 @@ public class ExceptionHandlerManager {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<BaseResponse<?>> IllegalArgumentException(IllegalArgumentException illegalArgumentException){
-        BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,"Please login.");
+        BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.BAD_REQUEST,illegalArgumentException.getMessage());
+        return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
+    }
+
+    @ExceptionHandler(UnAuthorizesAccessException.class)
+    public ResponseEntity<BaseResponse<?>> UnAuthorizesAccessException(UnAuthorizesAccessException authorizesAccessException){
+        BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.UNAUTHORIZED,authorizesAccessException.getMessage());
         return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
     }
 }
