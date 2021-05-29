@@ -6,13 +6,13 @@ import com.auth.server.entity.role.request.RoleRequest;
 import javax.servlet.http.HttpServletRequest;
 
 public interface RoleControllerService {
-    BaseResponse<?> save(RoleRequest roleRequest, String accessToken);
+    BaseResponse<?> save(RoleRequest roleRequest);
 
     BaseResponse<?> all();
 
-    BaseResponse<?> update(RoleRequest roleRequest, String accessToken);
+    BaseResponse<?> update(RoleRequest roleRequest);
 
-    BaseResponse<?> delete(String accessToken, Long id);
+    BaseResponse<?> delete(Long id);
 
-    BaseResponse<?> single(String accessToken, Long id);
+    BaseResponse<?> single(Long id);
 }

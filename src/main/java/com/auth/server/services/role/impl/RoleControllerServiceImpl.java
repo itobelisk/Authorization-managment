@@ -14,6 +14,7 @@ import com.auth.server.mapper.RoleMapper;
 import com.auth.server.repository.RoleRepository;
 import com.auth.server.services.role.RoleControllerService;
 import com.auth.server.util.CookieUtils;
+import com.auth.server.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,17 +30,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class RoleControllerServiceImpl implements RoleControllerService {
-
+    private final UserUtils userUtils;
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
     private static final String ROLE_START = "ROLE_";
     private final UserValidator userValidator;
 
     @Override
-    public BaseResponse<?> save(RoleRequest roleRequest, String accessToken) {
-        String accessTokens = CookieUtils.deserialize(accessToken);
-        log.info("accessTokens {} ", accessTokens);
-        WebUser webUser = userValidator.getCurrentUser("Bearer " + accessTokens);
+    public BaseResponse<?> save(RoleRequest roleRequest) {
+        WebUser webUser = userUtils.getUserId();
         log.info("webUser {} ", webUser);
         String roleName = getFinalName(roleRequest);
         if (roleRepository.existsByName(roleName) != null) throw new RoleAlreadyCreatedException();
@@ -66,10 +65,8 @@ public class RoleControllerServiceImpl implements RoleControllerService {
     }
 
     @Override
-    public BaseResponse<?> update(RoleRequest roleRequest, String accessToken) {
-        String accessTokens = CookieUtils.deserialize(accessToken);
-        log.info("accessTokens {} ", accessTokens);
-        WebUser webUser = userValidator.getCurrentUser("Bearer " + accessTokens);
+    public BaseResponse<?> update(RoleRequest roleRequest) {
+        WebUser webUser = userUtils.getUserId();
         log.info("webUser {} ", webUser);
         if (!roleRepository.existsById(roleRequest.getId())) throw new RoleIdNotFoundException();
         if(roleRequest.getName().toLowerCase().contains("admin")) throw new AdminCanNotBeUpdateException();
@@ -87,10 +84,8 @@ public class RoleControllerServiceImpl implements RoleControllerService {
     }
 
     @Override
-    public BaseResponse<?> delete(String accessToken, Long id) {
-        String accessTokens = CookieUtils.deserialize(accessToken);
-        log.info("accessTokens {} ", accessTokens);
-        WebUser webUser = userValidator.getCurrentUser("Bearer " + accessTokens);
+    public BaseResponse<?> delete(Long id) {
+        WebUser webUser = userUtils.getUserId();
         log.info("webUser {} ", webUser);
         if (!roleRepository.existsById(id)) throw new RoleIdNotFoundException();
         Role role = roleRepository.getOne(id);
@@ -101,10 +96,8 @@ public class RoleControllerServiceImpl implements RoleControllerService {
     }
 
     @Override
-    public BaseResponse<?> single(String accessToken, Long id) {
-        String accessTokens = CookieUtils.deserialize(accessToken);
-        log.info("accessTokens {} ", accessTokens);
-        WebUser webUser = userValidator.getCurrentUser("Bearer " + accessTokens);
+    public BaseResponse<?> single(Long id) {
+        WebUser webUser = userUtils.getUserId();
         log.info("webUser {} ", webUser);
         if (!roleRepository.existsById(id)) throw new RoleIdNotFoundException();
         RoleResponse role = roleMapper.toSingleRole(roleRepository.getOne(id));

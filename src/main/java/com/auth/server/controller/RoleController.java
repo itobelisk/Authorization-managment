@@ -6,7 +6,6 @@ import com.auth.server.entity.role.request.RoleRequest;
 import com.auth.server.services.role.impl.RoleControllerServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,8 +17,8 @@ public class RoleController implements RoleApi {
     private final RoleControllerServiceImpl roleControllerService;
 
     @Override
-    public ResponseEntity<BaseResponse<?>> save( String accessToken, RoleRequest roleRequest) {
-        BaseResponse<?> response = roleControllerService.save(roleRequest,accessToken);
+    public ResponseEntity<BaseResponse<?>> save(RoleRequest roleRequest) {
+        BaseResponse<?> response = roleControllerService.save(roleRequest);
         return new ResponseEntity<>(response,response.getMessage());
     }
 
@@ -30,20 +29,20 @@ public class RoleController implements RoleApi {
     }
 
     @Override
-    public ResponseEntity<BaseResponse<?>> update(String accessToken, RoleRequest roleRequest) {
-        BaseResponse<?> response = roleControllerService.update(roleRequest,accessToken);
+    public ResponseEntity<BaseResponse<?>> update(RoleRequest roleRequest) {
+        BaseResponse<?> response = roleControllerService.update(roleRequest);
         return new ResponseEntity<>(response,response.getMessage());
     }
 
     @Override
-    public ResponseEntity<BaseResponse<?>> delete(String accessToken, Long id) {
-        BaseResponse<?> response = roleControllerService.delete(accessToken,id);
+    public ResponseEntity<BaseResponse<?>> delete(Long id) {
+        BaseResponse<?> response = roleControllerService.delete(id);
         return new ResponseEntity<>(response,response.getMessage());
     }
 
     @Override
-    public ResponseEntity<BaseResponse<?>> single(String accessToken, Long id) {
-        BaseResponse<?> response = roleControllerService.single(accessToken,id);
+    public ResponseEntity<BaseResponse<?>> single(Long id) {
+        BaseResponse<?> response = roleControllerService.single(id);
         return new ResponseEntity<>(response,response.getMessage());
     }
 }

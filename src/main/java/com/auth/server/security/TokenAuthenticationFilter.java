@@ -1,8 +1,6 @@
 package com.auth.server.security;
 
-import com.auth.server.entity.webuser.WebUser;
 import com.auth.server.util.CookieUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import lombok.extern.slf4j.XSlf4j;
@@ -54,7 +52,6 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
-//        String bearerToken = request.getHeader("Authorization");
         Optional<Cookie> cookies = CookieUtils.getCookie(request,"Set-Cookie");
         Object accessTokens = CookieUtils.deserialize(cookies.get());
         log.info("accessTokens {} ", accessTokens);

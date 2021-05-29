@@ -11,21 +11,17 @@ import javax.servlet.http.HttpServletRequest;
 public interface RoleApi {
 
     @PostMapping("/save")
-    ResponseEntity<BaseResponse<?>> save(@RequestHeader(name = "Cookie") String accessToken,
-                                         @RequestBody RoleRequest roleRequest);
+    ResponseEntity<BaseResponse<?>> save(@RequestBody RoleRequest roleRequest);
 
     @GetMapping("/all")
     ResponseEntity<BaseResponse<?>> all();
 
     @PutMapping("/update")
-    ResponseEntity<BaseResponse<?>> update(@RequestHeader(name = "Cookie") String accessToken,
-                                           @RequestBody RoleRequest roleRequest);
+    ResponseEntity<BaseResponse<?>> update(@RequestBody RoleRequest roleRequest);
 
     @DeleteMapping("/delete")
-    ResponseEntity<BaseResponse<?>> delete(@RequestHeader(name = "Cookie") String accessToken,
-                                           @RequestParam Long id);
+    ResponseEntity<BaseResponse<?>> delete(@RequestParam Long id);
 
     @PostMapping("/single")
-    ResponseEntity<BaseResponse<?>> single(@RequestHeader(name = "Cookie") String accessToken,
-                                           @RequestParam Long id);
+    ResponseEntity<BaseResponse<?>> single(@RequestParam Long id);
 }
