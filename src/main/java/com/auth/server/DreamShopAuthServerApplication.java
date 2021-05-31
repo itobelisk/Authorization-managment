@@ -33,7 +33,6 @@ public class DreamShopAuthServerApplication extends SpringBootServletInitializer
                 registry.addMapping("/**").allowedMethods("GET", "POST", "PUT", "DELETE");
             }
         };
-
     }
 
     @Override

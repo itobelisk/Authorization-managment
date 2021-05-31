@@ -27,7 +27,7 @@ public interface AuthApi {
                                    BindingResult bindingResult);
 
     @PostMapping("/check")
-    CompletableFuture<ResponseEntity<?>> checkUser();
+    CompletableFuture<ResponseEntity<?>> checkUser(@RequestHeader(name = "Set-Cookies") String cookie);
 
     @PostMapping("/logout")
     ResponseEntity<?> logout(HttpServletRequest request,

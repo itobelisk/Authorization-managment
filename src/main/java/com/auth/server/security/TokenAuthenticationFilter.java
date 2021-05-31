@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import lombok.extern.slf4j.XSlf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,13 +19,12 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Optional;
 
-@Log4j2
 @Slf4j
-@XSlf4j
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
-
+    private static final String COOKIE_NAME = "Set-Cookie";
     @Autowired
     private TokenProvider tokenProvider;
     @Autowired
@@ -47,15 +47,22 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception ex) {
             logger.error("Could not set user authentication in security context", ex);
         }
-
-        filterChain.doFilter(request, response);
+        if (request.getHeader(COOKIE_NAME) == null) {
+            filterChain.doFilter(request, response);
+        }
     }
 
     private String getJwtFromRequest(HttpServletRequest request) {
-        Optional<Cookie> cookies = CookieUtils.getCookie(request,"Set-Cookie");
-        Object accessTokens = CookieUtils.deserialize(cookies.get());
-        log.info("accessTokens {} ", accessTokens);
-        String finalAccessToken = "Bearer "+accessTokens;
+        String accessTokens = "";
+        if (request.getHeader(COOKIE_NAME) != null) {
+            accessTokens = request.getHeader(COOKIE_NAME);
+            log.info("accessTokens {} ", accessTokens);
+        } else {
+            Optional<Cookie> cookies = CookieUtils.getCookie(request, COOKIE_NAME);
+            accessTokens = CookieUtils.deserialize(cookies.get().toString());
+            log.info("accessTokens {} ", accessTokens);
+        }
+        String finalAccessToken = "Bearer " + accessTokens;
         log.info("finalAccessToken {} ", finalAccessToken);
         if (StringUtils.hasText(finalAccessToken) && finalAccessToken.startsWith("Bearer ")) {
             return finalAccessToken.substring(7, finalAccessToken.length());

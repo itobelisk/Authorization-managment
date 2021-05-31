@@ -67,7 +67,6 @@ public class AuthController<T> implements AuthApi {
     @SneakyThrows
     @Override
     public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest, HttpServletResponse response) {
-        HttpHeaders httpHeaders = new HttpHeaders();
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
@@ -138,7 +137,7 @@ public class AuthController<T> implements AuthApi {
 
     @Async
     @Override
-    public CompletableFuture<ResponseEntity<?>> checkUser() {
+    public CompletableFuture<ResponseEntity<?>> checkUser(String cookies) {
         WebUser webUser = userUtils.getUserId();
         return CompletableFuture.completedFuture(ResponseEntity.accepted()
                 .body(new ApiResponse(true, webUser.getEmail())));
