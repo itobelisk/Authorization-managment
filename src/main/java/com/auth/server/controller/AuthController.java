@@ -107,13 +107,13 @@ public class AuthController<T> implements AuthApi {
                 .build();
         log.info("AuthResponse authResponse = AuthResponse");
         return ResponseEntity.ok()
-                .header(HEADER_NAME,CookieUtils.serialize(token))
                 .body(authResponse);
 
     }
 
     @Override
-    public ResponseEntity<?> registerUser(@Valid SignUpRequest signUpRequest, BindingResult bindingResult) {
+    public ResponseEntity<?> registerUser(@Valid SignUpRequest signUpRequest,
+                                          BindingResult bindingResult) {
         bindingManager.bindingCheck(bindingResult);
         if (userRepository.existsByEmail(signUpRequest.getEmail())) throw new EmailAlreadyUsedException();
         if (roleRepository.existsByName(signUpRequest.getRoles().getName()) == null)
@@ -137,14 +137,13 @@ public class AuthController<T> implements AuthApi {
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/user/me")
                 .buildAndExpand(result.getId()).toUri();
-
         return ResponseEntity.created(location)
                 .body(new ApiResponse(true, "User registered successfully."));
     }
 
     @Async
     @Override
-    public CompletableFuture<ResponseEntity<?>> checkUser() {
+    public CompletableFuture<ResponseEntity<?>> checkUser(HttpServletRequest request) {
         WebUser webUser = userUtils.getUserId();
         return CompletableFuture.completedFuture(ResponseEntity.accepted()
                 .body(new ApiResponse(true, webUser.getEmail())));
@@ -158,8 +157,9 @@ public class AuthController<T> implements AuthApi {
         log.info("token {} ", token);
         String bearerToken = request.getHeader(HEADER_NAME);
         String accessTokens = bearerToken.substring(7, bearerToken.length());
+        String logoutTokenSerialize = CookieUtils.serialize(token);
         return token.equals(accessTokens) ? ResponseEntity.accepted().body(new ApiResponse(false, "Logout not successful")) :
-                ResponseEntity.ok().header(HEADER_NAME,CookieUtils.serialize(token)).body(new ApiResponse(true, "logout successfully."));
+                ResponseEntity.ok().body(new ApiResponse(true, "logout successfully.", logoutTokenSerialize));
     }
 
     @Override
@@ -188,10 +188,10 @@ public class AuthController<T> implements AuthApi {
     }
 
     @Override
-    public ResponseEntity<?> userDetails() {
+    public ResponseEntity<?> userDetails(HttpServletRequest request) {
         WebUser webUser = userUtils.getUserId();
         log.info("webUser {} ", webUser);
-        return ResponseEntity.ok(
+        return ResponseEntity.ok().body(
                 UserResponse
                         .builder()
                         .webUser(WebUserShortResponse

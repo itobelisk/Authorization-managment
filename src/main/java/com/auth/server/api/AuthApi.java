@@ -26,7 +26,7 @@ public interface AuthApi {
                                    BindingResult bindingResult);
 
     @PostMapping("/check")
-    CompletableFuture<ResponseEntity<?>> checkUser();
+    CompletableFuture<ResponseEntity<?>> checkUser(HttpServletRequest request);
 
     @PostMapping("/logout")
     ResponseEntity<?> logout(HttpServletRequest request);
@@ -37,5 +37,5 @@ public interface AuthApi {
                                  BindingResult bindingResult);
 
     @GetMapping("/user")
-    ResponseEntity<?> userDetails();
+    ResponseEntity<?> userDetails(HttpServletRequest request);
 }
