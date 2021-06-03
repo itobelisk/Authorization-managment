@@ -5,7 +5,6 @@ import com.auth.server.entity.role.request.RoleRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 
 @RequestMapping("/role/admin")
 public interface RoleApi {

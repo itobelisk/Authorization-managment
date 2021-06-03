@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
+import javax.persistence.Transient;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,6 +32,7 @@ public class WebUserResponse {
 
     private Boolean emailVerified = false;
 
+    @Transient
     private String password;
 
     private AuthProvider provider = AuthProvider.local;

@@ -1,17 +1,17 @@
 package com.auth.server.api;
 
-import com.auth.server.base.BaseResponse;
 import com.auth.server.entity.webuser.request.WebUserRequest;
 import com.auth.server.payload.LoginRequest;
 import com.auth.server.payload.SignUpRequest;
-import org.springframework.boot.web.servlet.server.Session;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.concurrent.CompletableFuture;
 
@@ -19,22 +19,20 @@ import java.util.concurrent.CompletableFuture;
 public interface AuthApi {
 
     @PostMapping("/login")
-    ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest,
-                                       HttpServletResponse response);
+    ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest);
 
     @PostMapping("/signup")
     ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest,
                                    BindingResult bindingResult);
 
     @PostMapping("/check")
-    CompletableFuture<ResponseEntity<?>> checkUser(@RequestHeader(name = "Set-Cookies") String cookie);
+    CompletableFuture<ResponseEntity<?>> checkUser();
 
     @PostMapping("/logout")
-    ResponseEntity<?> logout(HttpServletRequest request,
-                             HttpServletResponse response);
+    ResponseEntity<?> logout(HttpServletRequest request);
 
     @PutMapping("/admin/change/password")
-    ResponseEntity<?> changePass(HttpServletRequest request,HttpServletResponse response,
+    ResponseEntity<?> changePass(HttpServletRequest request,
                                  @Valid @RequestBody WebUserRequest webUserRequest,
                                  BindingResult bindingResult);
 

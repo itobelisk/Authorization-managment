@@ -1,12 +1,12 @@
 package com.auth.server.entity.webuser.response;
 
-import com.auth.server.entity.role.Role;
-import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Getter
 @Setter

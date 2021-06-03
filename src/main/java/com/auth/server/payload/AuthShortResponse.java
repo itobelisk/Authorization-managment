@@ -1,17 +1,19 @@
 package com.auth.server.payload;
 
-import com.auth.server.entity.webuser.response.WebUserShortResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Map;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserResponse {
-    private WebUserShortResponse webUser;
+public class AuthShortResponse {
+
+    private Map<String,String> customHeaderData;
 }

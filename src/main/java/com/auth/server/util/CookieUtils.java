@@ -11,10 +11,12 @@ import java.util.Base64;
 import java.util.Optional;
 
 public class CookieUtils {
-    public static final Integer MAXAGE = 604800;
+    public static final Integer MAX_AGE = 604800;
+    public static final String HEADER_NAME = "Authorization";
+
 
     public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
-        if(request.getCookies() == null) throw  new UnAuthorizesAccessException();
+        if (request.getCookies() == null) throw new UnAuthorizesAccessException();
         Cookie[] cookies = request.getCookies();
 
         if (cookies != null && cookies.length > 0) {
@@ -61,7 +63,7 @@ public class CookieUtils {
                 Base64.getUrlDecoder().decode(cookie.getValue())));
     }
 
-    public static String deserialize(String cookie) throws IllegalArgumentException{
+    public static String deserialize(String cookie) throws IllegalArgumentException {
         return String.valueOf(SerializationUtils.deserialize(
                 Base64.getUrlDecoder().decode(cookie)));
     }
