@@ -143,7 +143,7 @@ public class AuthController<T> implements AuthApi {
 
     @Async
     @Override
-    public CompletableFuture<ResponseEntity<?>> checkUser(HttpServletRequest request) {
+    public CompletableFuture<ResponseEntity<?>> checkUser() {
         WebUser webUser = userUtils.getUserId();
         return CompletableFuture.completedFuture(ResponseEntity.accepted()
                 .body(new ApiResponse(true, webUser.getEmail())));
@@ -188,7 +188,7 @@ public class AuthController<T> implements AuthApi {
     }
 
     @Override
-    public ResponseEntity<?> userDetails(HttpServletRequest request) {
+    public ResponseEntity<?> userDetails() {
         WebUser webUser = userUtils.getUserId();
         log.info("webUser {} ", webUser);
         return ResponseEntity.ok().body(
