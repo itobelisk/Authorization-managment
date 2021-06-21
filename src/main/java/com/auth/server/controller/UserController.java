@@ -2,6 +2,7 @@ package com.auth.server.controller;
 
 import com.auth.server.api.UserApi;
 import com.auth.server.base.BaseResponse;
+import com.auth.server.base.BaseResponseMessage;
 import com.auth.server.entity.webuser.WebUser;
 import com.auth.server.entity.webuser.request.WebUserRequest;
 import com.auth.server.util.UserUtils;
@@ -21,22 +22,24 @@ public class UserController implements UserApi {
     private final UserUtils userUtils;
 
     @Override
-    public ResponseEntity<BaseResponse<?>> checkEmail(WebUserRequest webUserRequest) {
+    public ResponseEntity<BaseResponseMessage<?>> checkEmail(WebUserRequest webUserRequest) {
         WebUser webUser = userUtils.getUserId();
-        BaseResponse<?> response;
+        BaseResponseMessage<?> response;
         boolean isEmail = webUser.getEmail().equals(webUserRequest.getEmail());
         response = checkEmailTest(isEmail);
-        return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(response,response.getStatus());
     }
 
-    private BaseResponse<?> checkEmailTest(Boolean check) {
-        return check ? new BaseResponse<>(new Date(), true, HttpStatus.ACCEPTED,check):new BaseResponse<>(new Date(), false, HttpStatus.ACCEPTED,check);
+    private BaseResponseMessage<?> checkEmailTest(Boolean check) {
+        return check ?
+                new BaseResponseMessage<>(new Date(), true,HttpStatus.ACCEPTED,HttpStatus.ACCEPTED.value(), "You dont need verification.",check):
+                new BaseResponseMessage<>(new Date(), false, HttpStatus.BAD_REQUEST,HttpStatus.BAD_REQUEST.value(),"You need to repass verification.",check);
     }
 
     @Override
-    public ResponseEntity<BaseResponse<?>> checkPhone(WebUserRequest webUserRequest) {
+    public ResponseEntity<BaseResponseMessage<?>> checkPhone(WebUserRequest webUserRequest) {
        WebUser webUser = userUtils.getUserId();
-        BaseResponse<?> response;
+        BaseResponseMessage<?> response;
         boolean isPhoneNumber = webUser.getPhoneNumber().equals(webUserRequest.getPhoneNumber());
         response = checkEmailTest(isPhoneNumber);
         return new ResponseEntity<>(response,HttpStatus.ACCEPTED);

@@ -1,6 +1,6 @@
 package com.auth.server.api;
 
-import com.auth.server.base.BaseResponse;
+import com.auth.server.base.BaseResponseMessage;
 import com.auth.server.entity.webuser.request.WebUserRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface UserApi {
 
     @GetMapping("/email")
-    ResponseEntity<BaseResponse<?>> checkEmail(@RequestBody WebUserRequest webUserRequest);
+    ResponseEntity<BaseResponseMessage<?>> checkEmail(@RequestBody WebUserRequest webUserRequest);
 
     @GetMapping("/phone")
-    ResponseEntity<BaseResponse<?>> checkPhone(@RequestBody WebUserRequest webUserRequest);
+    ResponseEntity<BaseResponseMessage<?>> checkPhone(@RequestBody WebUserRequest webUserRequest);
 }
