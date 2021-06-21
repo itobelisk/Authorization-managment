@@ -6,7 +6,6 @@ import com.auth.server.api.AuthApi;
 import com.auth.server.entity.role.Role;
 import com.auth.server.entity.webuser.WebUser;
 import com.auth.server.entity.webuser.request.WebUserRequest;
-import com.auth.server.entity.webuser.response.WebUserResponse;
 import com.auth.server.entity.webuser.response.WebUserShortResponse;
 import com.auth.server.enums.AuthProvider;
 import com.auth.server.exception.EmailAlreadyUsedException;
@@ -15,7 +14,6 @@ import com.auth.server.exception.RoleNameNotExistException;
 import com.auth.server.exception.UserNotFoundException;
 import com.auth.server.payload.ApiResponse;
 import com.auth.server.payload.AuthResponse;
-import com.auth.server.payload.AuthShortResponse;
 import com.auth.server.payload.LoginRequest;
 import com.auth.server.payload.SignUpRequest;
 import com.auth.server.payload.UserResponse;
@@ -27,7 +25,6 @@ import com.auth.server.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -41,19 +38,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static com.auth.server.util.CookieUtils.HEADER_NAME;
-import static com.auth.server.util.CookieUtils.MAX_AGE;
 
 @RestController
 @RequiredArgsConstructor
@@ -119,7 +112,6 @@ public class AuthController<T> implements AuthApi {
         if (roleRepository.existsByName(signUpRequest.getRoles().getName()) == null)
             throw new RoleNameNotExistException();
 
-        // Creating user's account
         WebUser user = new WebUser();
         user.setFirstName(signUpRequest.getFirstName());
         user.setLastName(signUpRequest.getLastName());
@@ -182,10 +174,12 @@ public class AuthController<T> implements AuthApi {
                         "User id not found"));
         logout(request);
         return !passwordEncoder.matches(webUserRequest.getOldPassword(), userWithNewPassword.getPassword()) ?
-                ResponseEntity.accepted().body(new ApiResponse(false, "Password did not changed.")) :
-                ResponseEntity.accepted().body(new ApiResponse(true, "password changed successfully."));
+                ResponseEntity.accepted().body(new ApiResponse(true, "Password changed successfully.")) :
+                ResponseEntity.accepted().body(new ApiResponse(false, "Password did not changed."));
 
     }
+
+
 
     @Override
     public ResponseEntity<?> userDetails() {
