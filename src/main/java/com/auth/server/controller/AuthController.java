@@ -168,14 +168,11 @@ public class AuthController<T> implements AuthApi {
             throw new OldPasswordErrorException();
 
         oldUser.setPassword(passwordEncoder.encode(webUserRequest.getPassword()));
-        userRepository.save(oldUser);
-        WebUser userWithNewPassword = userRepository.findById(webUser.getId())
-                .orElseThrow(() -> new UserNotFoundException(
-                        "User id not found"));
+       userRepository.save(oldUser);
+
         logout(request);
-        return !passwordEncoder.matches(webUserRequest.getOldPassword(), userWithNewPassword.getPassword()) ?
-                ResponseEntity.accepted().body(new ApiResponse(true, "Password changed successfully.")) :
-                ResponseEntity.accepted().body(new ApiResponse(false, "Password did not changed."));
+        return  ResponseEntity.accepted().body(new ApiResponse(true, "Password changed successfully."));
+
 
     }
 

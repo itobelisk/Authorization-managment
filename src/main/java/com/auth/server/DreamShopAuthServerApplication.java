@@ -1,9 +1,12 @@
 package com.auth.server;
 
 import com.auth.server.config.AppProperties;
+import com.auth.server.services.positions.impl.PositionsServiceImpl;
+import com.auth.server.services.positonsCategory.impl.PositionCategoryServiceImpl;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.web.embedded.EmbeddedWebServerFactoryCustomizerAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
@@ -17,9 +20,12 @@ import javax.validation.constraints.NotNull;
 @SpringBootApplication
 @EnableConfigurationProperties(AppProperties.class)
 @EnableEurekaClient
-@EnableJpaRepositories
+@RequiredArgsConstructor
 
-public class DreamShopAuthServerApplication extends SpringBootServletInitializer {
+@EnableJpaRepositories
+public class DreamShopAuthServerApplication extends SpringBootServletInitializer implements CommandLineRunner {
+    private final PositionCategoryServiceImpl positionsCategoryServiceImpl;
+    private final PositionsServiceImpl positionsService;
 
     public static void main(String[] args) {
         SpringApplication.run(DreamShopAuthServerApplication.class, args);
@@ -40,5 +46,12 @@ public class DreamShopAuthServerApplication extends SpringBootServletInitializer
         return builder.sources(DreamShopAuthServerApplication.class);
     }
 
-
+    @Override
+    public void run(String... args) throws Exception {
+        positionsCategoryServiceImpl.fillData();
+        positionsService.fillAdministrationData();
+        positionsService.fillFinancialData();
+        positionsService.fillManagementData();
+        positionsService.fillStuffData();;
+    }
 }
