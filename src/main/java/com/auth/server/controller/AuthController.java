@@ -168,7 +168,7 @@ public class AuthController<T> implements AuthApi {
             throw new OldPasswordErrorException();
 
         oldUser.setPassword(passwordEncoder.encode(webUserRequest.getPassword()));
-       userRepository.save(oldUser);
+        userRepository.save(oldUser);
 
         logout(request);
         return  ResponseEntity.accepted().body(new ApiResponse(true, "Password changed successfully."));

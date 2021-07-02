@@ -1,8 +1,14 @@
 package com.auth.server;
 
 import com.auth.server.config.AppProperties;
-import com.auth.server.services.positions.impl.PositionsServiceImpl;
+import com.auth.server.entity.position.response.PositionResponse;
+import com.auth.server.entity.role.request.RoleRequest;
+import com.auth.server.mapper.PositionsMapper;
+import com.auth.server.repository.PositionsRepository;
+import com.auth.server.services.positions.impl.CommandPositionServiceImplementation;
 import com.auth.server.services.positonsCategory.impl.PositionCategoryServiceImpl;
+import com.auth.server.services.role.CommandRoleService;
+import com.auth.server.services.user.impl.CommandUserServiceImplementation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,6 +22,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @SpringBootApplication
 @EnableConfigurationProperties(AppProperties.class)
@@ -25,7 +32,11 @@ import javax.validation.constraints.NotNull;
 @EnableJpaRepositories
 public class DreamShopAuthServerApplication extends SpringBootServletInitializer implements CommandLineRunner {
     private final PositionCategoryServiceImpl positionsCategoryServiceImpl;
-    private final PositionsServiceImpl positionsService;
+    private final CommandPositionServiceImplementation positionsService;
+    private final CommandUserServiceImplementation commandUserImplementation;
+    private final CommandRoleService roleControllerService;
+    private final PositionsMapper positionsMapper;
+    private final PositionsRepository positionsRepository;
 
     public static void main(String[] args) {
         SpringApplication.run(DreamShopAuthServerApplication.class, args);
@@ -48,10 +59,16 @@ public class DreamShopAuthServerApplication extends SpringBootServletInitializer
 
     @Override
     public void run(String... args) throws Exception {
-        positionsCategoryServiceImpl.fillData();
-        positionsService.fillAdministrationData();
-        positionsService.fillFinancialData();
-        positionsService.fillManagementData();
-        positionsService.fillStuffData();;
+
+        List<PositionResponse> allPositions = positionsMapper.toResponse(positionsRepository.findAll());
+        if (allPositions.isEmpty()) {
+            roleControllerService.createAdminRole( RoleRequest.builder().name("admin").build());
+            positionsCategoryServiceImpl.fillData();
+            positionsService.fillAdministrationData();
+            positionsService.fillFinancialData();
+            positionsService.fillManagementData();
+            positionsService.fillStuffData();
+            commandUserImplementation.addAdmin();
+        }
     }
 }

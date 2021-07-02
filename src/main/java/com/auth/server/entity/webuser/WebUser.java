@@ -81,6 +81,8 @@ public class WebUser extends BaseEntity {
                     name = "role_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
+    private Boolean isCommandCreated;
+
 
 }
 

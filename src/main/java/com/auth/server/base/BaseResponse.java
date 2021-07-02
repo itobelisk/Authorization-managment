@@ -15,7 +15,6 @@ import java.util.Date;
 @AllArgsConstructor
 public class BaseResponse<T> {
     private Date date = new Timestamp(new Date().getTime());
-
     private Boolean status;
     private HttpStatus message;
     private T data;
