@@ -20,8 +20,6 @@ public class RoleMapper {
     public RoleResponse toResponse(Role save) {
         return RoleResponse.builder()
                 .id(save.getId())
-                .creationDate(save.getCreatedDate())
-                .updatedDate(save.getUpdatedDate())
                 .name(save.getName())
                 .build();
     }
@@ -30,15 +28,13 @@ public class RoleMapper {
         return all.stream()
                 .map(e -> new RoleResponse(
                         e.getId(),
-                        e.getCreatedDate(),
-                        e.getUpdatedDate(),
                         FilterRoleName(e.getName())
                 ))
                 .collect(Collectors.toList());
     }
 
     private String FilterRoleName(String name) {
-        return name.substring(name.indexOf("_")+1);
+        return name.substring(name.indexOf("_") + 1);
     }
 
     public Role getRoleById(Role one) {
@@ -50,9 +46,14 @@ public class RoleMapper {
     public RoleResponse toSingleRole(Role one) {
         return RoleResponse.builder()
                 .id(one.getId())
-                .creationDate(one.getCreatedDate())
-                .updatedDate(one.getUpdatedDate())
                 .name(one.getName())
                 .build();
+    }
+
+    public Role getRoleEntity(RoleResponse roleResponse) {
+        Role role = new Role();
+        role.setId(roleResponse.getId());
+        role.setName(roleResponse.getName());
+        return role;
     }
 }

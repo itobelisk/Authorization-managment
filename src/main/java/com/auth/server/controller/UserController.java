@@ -32,7 +32,7 @@ public class UserController implements UserApi {
 
     private BaseResponseMessage<?> checkEmailTest(Boolean check) {
         return check ?
-                new BaseResponseMessage<>(new Date(), true,HttpStatus.ACCEPTED,HttpStatus.ACCEPTED.value(), "You dont need verification.",check):
+                new BaseResponseMessage<>(new Date(), true,HttpStatus.OK,HttpStatus.OK.value(), "You dont need verification.",check):
                 new BaseResponseMessage<>(new Date(), false, HttpStatus.BAD_REQUEST,HttpStatus.BAD_REQUEST.value(),"You need to repass verification.",check);
     }
 
@@ -42,6 +42,6 @@ public class UserController implements UserApi {
         BaseResponseMessage<?> response;
         boolean isPhoneNumber = webUser.getPhoneNumber().equals(webUserRequest.getPhoneNumber());
         response = checkEmailTest(isPhoneNumber);
-        return new ResponseEntity<>(response,HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(response,HttpStatus.OK);
     }
 }

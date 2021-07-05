@@ -15,8 +15,6 @@ import java.util.Date;
 @Builder
 public class RoleResponse {
     private Long id;
-    private Date creationDate;
-    private Date updatedDate;
     private String name;
 
 }

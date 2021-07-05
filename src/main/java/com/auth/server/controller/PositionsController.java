@@ -23,7 +23,7 @@ public class PositionsController implements PositionsApi {
     @Override
     public ResponseEntity<BaseResponse<?>> all() {
         Map<String, List<PositionsResponse>> responseMap = positionsService.all();
-        BaseResponse<?> response = new BaseResponse<>(new Date(), true, HttpStatus.ACCEPTED, responseMap);
+        BaseResponse<?> response = new BaseResponse<>(new Date(), true, HttpStatus.OK, responseMap);
         return new ResponseEntity<>(response, response.getMessage());
     }
 

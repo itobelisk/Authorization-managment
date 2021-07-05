@@ -67,18 +67,16 @@ public class RoleControllerServiceImpl implements RoleControllerService {
         String roleName = getFinalName(roleRequest);
         RoleResponse response = null;
         try {
-            Role role = roleMapper.getRoleById(roleRepository.getOne(roleRequest.getId()));
-            role.setId(roleRequest.getId());
-            role.setName(roleName);
+            RoleResponse roleResponse = roleMapper.toSingleRole(roleRepository.getOne(roleRequest.getId()));
+            roleResponse.setId(roleRequest.getId());
+            roleResponse.setName(roleName);
+            Role role = roleMapper.getRoleEntity(roleResponse);
             response = roleMapper.toResponse(roleRepository.save(role));
         } catch (Exception e) {
             return new BaseResponse<>(new Date(), false, HttpStatus.BAD_REQUEST, e.getMessage());
         }
         return new BaseResponse<>(new Date(), true, HttpStatus.OK, response);
     }
-
-
-
 
     @Override
     public BaseResponse<?> delete(Long id) {
@@ -134,14 +132,14 @@ public class RoleControllerServiceImpl implements RoleControllerService {
     public BaseResponse<?> updateCollection(RoleRequest roleRequest) {
         RoleResponse response = null;
         for (int i = 0; i < roleRequest.getRoleRequestsCollection().size(); i++) {
-            if (!roleRepository.existsById(roleRequest.getId())) throw new RoleIdNotFoundException();
-            if (roleRequest.getName().toLowerCase().contains("admin")) throw new AdminCanNotBeUpdateException();
-            String roleName = getFinalName(roleRequest);
+            if (roleRequest.getRoleRequestsCollection().iterator().next().getName().toLowerCase().contains("admin")) throw new AdminCanNotBeUpdateException();
+            String roleName = getFinalNameCollection(roleRequest);
 
             try {
-                Role role = roleMapper.getRoleById(roleRepository.getOne(roleRequest.getId()));
-                role.setId(roleRequest.getId());
-                role.setName(roleName);
+                RoleResponse roleResponse = roleMapper.toSingleRole(roleRepository.existsByName(roleName));
+                roleResponse.setId(roleResponse.getId());
+                roleResponse.setName(roleName);
+                Role role = roleMapper.getRoleEntity(roleResponse);
                 response = roleMapper.toResponse(roleRepository.save(role));
             } catch (Exception e) {
                 return new BaseResponse<>(new Date(), false, HttpStatus.BAD_REQUEST, e.getMessage());
