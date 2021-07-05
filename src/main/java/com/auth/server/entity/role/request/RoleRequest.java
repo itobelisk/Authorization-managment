@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Collection;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -22,4 +21,5 @@ public class RoleRequest {
     private Collection<WebUserResponse> users;
     private Collection<PrivilegeResponse> privileges;
     private Collection<RoleRequest> roleRequestsCollection;
+    private Boolean isSelected;
 }

@@ -1,22 +1,14 @@
 package com.auth.server.services.role;
 
 import com.auth.server.base.BaseResponse;
+import com.auth.server.entity.position.response.PositionsResponse;
 import com.auth.server.entity.role.request.RoleRequest;
 
-import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
 
 public interface RoleControllerService {
-    BaseResponse<?> save(RoleRequest roleRequest);
 
-    BaseResponse<?> all();
-
-    BaseResponse<?> update(RoleRequest roleRequest);
-
-    BaseResponse<?> delete(Long id);
-
-    BaseResponse<?> single(Long id);
-
-    BaseResponse<?> saveCollection(RoleRequest roleRequest);
-
-    BaseResponse<?> updateCollection(RoleRequest roleRequest);
+    BaseResponse<?> manageCollection(RoleRequest roleRequest);
+    Map<String, List<PositionsResponse>> all();
 }
