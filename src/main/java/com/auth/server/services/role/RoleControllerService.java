@@ -15,4 +15,6 @@ public interface RoleControllerService {
     BaseResponse<?> delete(Long id);
 
     BaseResponse<?> single(Long id);
+
+    BaseResponse<?> saveCollection(RoleRequest roleRequest);
 }

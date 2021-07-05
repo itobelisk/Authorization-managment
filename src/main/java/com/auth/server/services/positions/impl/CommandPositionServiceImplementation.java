@@ -1,7 +1,6 @@
 package com.auth.server.services.positions.impl;
 
 import com.auth.server.entity.position.Positions;
-import com.auth.server.entity.position.response.PositionResponse;
 import com.auth.server.entity.positionscategory.PositionsCategories;
 import com.auth.server.mapper.PositionsMapper;
 import com.auth.server.repository.PositionCategoryRepository;

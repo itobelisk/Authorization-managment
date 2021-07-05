@@ -21,4 +21,5 @@ public class RoleRequest {
     private String name;
     private Collection<WebUserResponse> users;
     private Collection<PrivilegeResponse> privileges;
+    private Collection<RoleRequest> roleRequestsCollection;
 }

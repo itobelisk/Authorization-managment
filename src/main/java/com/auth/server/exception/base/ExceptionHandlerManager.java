@@ -107,4 +107,10 @@ public class ExceptionHandlerManager {
         BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.UNAUTHORIZED,authorizesAccessException.getMessage());
         return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
     }
+
+    @ExceptionHandler(DuplicatedPositionException.class)
+    public ResponseEntity<BaseResponse<?>> DuplicatedPositionException(DuplicatedPositionException duplicatedPositionException){
+        BaseResponse<?> baseResponse = new BaseResponse<>(new Date(),false,HttpStatus.UNAUTHORIZED,duplicatedPositionException.getMessage());
+        return new ResponseEntity<>(baseResponse, HttpStatus.ACCEPTED);
+    }
 }

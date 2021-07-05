@@ -12,8 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PositionRequest {
-
+public class PositionsRequest {
     private Long id;
     private PositionsCategories positionsCategories;
     private String positionName;

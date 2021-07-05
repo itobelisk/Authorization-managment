@@ -12,12 +12,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PositionResponse {
+public class PositionsResponse {
 
     private PositionsCategoriesResponse positionsCategoriesResponse;
     private Long id;
     private String positionName;
     private String positionIcon;
     private String positionDetails;
+    private boolean isSelected = false;
 
 }

@@ -1,6 +1,5 @@
 package com.auth.server.services.role.impl;
 
-import com.auth.server.annotations.validator.UserValidator;
 import com.auth.server.base.BaseResponse;
 import com.auth.server.entity.role.Role;
 import com.auth.server.entity.role.request.RoleRequest;
@@ -13,18 +12,14 @@ import com.auth.server.exception.RoleIdNotFoundException;
 import com.auth.server.mapper.RoleMapper;
 import com.auth.server.repository.RoleRepository;
 import com.auth.server.services.role.RoleControllerService;
-import com.auth.server.util.CookieUtils;
 import com.auth.server.util.UserUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,7 +29,6 @@ public class RoleControllerServiceImpl implements RoleControllerService {
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
     private static final String ROLE_START = "ROLE_";
-    private final UserValidator userValidator;
 
     @Override
     public BaseResponse<?> save(RoleRequest roleRequest) {
@@ -110,4 +104,28 @@ public class RoleControllerServiceImpl implements RoleControllerService {
         log.info("finalRoleName {} ", finalRoleName);
         return ROLE_START + finalRoleName.toUpperCase();
     }
+
+    private String getFinalNameCollection(RoleRequest roleRequest) {
+        String finalRoleName = "";
+        finalRoleName = roleRequest.getRoleRequestsCollection().iterator().next().getName().contains(" ") ? roleRequest.getRoleRequestsCollection().iterator().next().getName().replace(" ", "_") : roleRequest.getRoleRequestsCollection().iterator().next().getName().toUpperCase();
+        log.info("finalRoleName {} ", finalRoleName);
+        return ROLE_START + finalRoleName.toUpperCase();
+    }
+
+    @Override
+    public BaseResponse<?> saveCollection(RoleRequest roleRequest) {
+        RoleResponse response = null;
+        for (int i = 0; i < roleRequest.getRoleRequestsCollection().size(); i++) {
+            String roleName = getFinalNameCollection(roleRequest);
+            if (roleRepository.existsByName(roleName) != null) throw new RoleAlreadyCreatedException();
+            try {
+                Role role = roleMapper.toRoleEntity(roleName);
+                response = roleMapper.toResponse(roleRepository.save(role));
+            } catch (Exception e) {
+                return new BaseResponse<>(new Date(), false, HttpStatus.BAD_REQUEST, e.getMessage());
+            }
+        }
+        return new BaseResponse<>(new Date(), true, HttpStatus.OK, response);
+    }
+
 }

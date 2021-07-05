@@ -23,4 +23,7 @@ public interface RoleApi {
 
     @PostMapping("/single")
     ResponseEntity<BaseResponse<?>> single(@RequestParam Long id);
+
+    @PutMapping("/position/save")
+    ResponseEntity<BaseResponse<?>> updatePositions(@RequestBody RoleRequest roleRequest);
 }

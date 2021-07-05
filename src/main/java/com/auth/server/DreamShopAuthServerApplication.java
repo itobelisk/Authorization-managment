@@ -1,7 +1,7 @@
 package com.auth.server;
 
 import com.auth.server.config.AppProperties;
-import com.auth.server.entity.position.response.PositionResponse;
+import com.auth.server.entity.position.response.PositionsResponse;
 import com.auth.server.entity.role.request.RoleRequest;
 import com.auth.server.mapper.PositionsMapper;
 import com.auth.server.repository.PositionsRepository;
@@ -60,7 +60,7 @@ public class DreamShopAuthServerApplication extends SpringBootServletInitializer
     @Override
     public void run(String... args) throws Exception {
 
-        List<PositionResponse> allPositions = positionsMapper.toResponse(positionsRepository.findAll());
+        List<PositionsResponse> allPositions = positionsMapper.toResponse(positionsRepository.findAll());
         if (allPositions.isEmpty()) {
             roleControllerService.createAdminRole( RoleRequest.builder().name("admin").build());
             positionsCategoryServiceImpl.fillData();
