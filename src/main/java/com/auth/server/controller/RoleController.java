@@ -45,8 +45,14 @@ public class RoleController implements RoleApi {
     }
 
     @Override
-    public ResponseEntity<BaseResponse<?>> updatePositions(RoleRequest roleRequest) {
+    public ResponseEntity<BaseResponse<?>> savePositions(RoleRequest roleRequest) {
         BaseResponse<?> response = roleControllerService.saveCollection(roleRequest);
+        return new ResponseEntity<>(response,response.getMessage());
+    }
+
+    @Override
+    public ResponseEntity<BaseResponse<?>> updatePositions(RoleRequest roleRequest) {
+        BaseResponse<?> response = roleControllerService.updateCollection(roleRequest);
         return new ResponseEntity<>(response,response.getMessage());
     }
 }

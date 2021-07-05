@@ -77,6 +77,9 @@ public class RoleControllerServiceImpl implements RoleControllerService {
         return new BaseResponse<>(new Date(), true, HttpStatus.OK, response);
     }
 
+
+
+
     @Override
     public BaseResponse<?> delete(Long id) {
         WebUser webUser = userUtils.getUserId();
@@ -120,6 +123,25 @@ public class RoleControllerServiceImpl implements RoleControllerService {
             if (roleRepository.existsByName(roleName) != null) throw new RoleAlreadyCreatedException();
             try {
                 Role role = roleMapper.toRoleEntity(roleName);
+                response = roleMapper.toResponse(roleRepository.save(role));
+            } catch (Exception e) {
+                return new BaseResponse<>(new Date(), false, HttpStatus.BAD_REQUEST, e.getMessage());
+            }
+        }
+        return new BaseResponse<>(new Date(), true, HttpStatus.OK, response);
+    }
+
+    public BaseResponse<?> updateCollection(RoleRequest roleRequest) {
+        RoleResponse response = null;
+        for (int i = 0; i < roleRequest.getRoleRequestsCollection().size(); i++) {
+            if (!roleRepository.existsById(roleRequest.getId())) throw new RoleIdNotFoundException();
+            if (roleRequest.getName().toLowerCase().contains("admin")) throw new AdminCanNotBeUpdateException();
+            String roleName = getFinalName(roleRequest);
+
+            try {
+                Role role = roleMapper.getRoleById(roleRepository.getOne(roleRequest.getId()));
+                role.setId(roleRequest.getId());
+                role.setName(roleName);
                 response = roleMapper.toResponse(roleRepository.save(role));
             } catch (Exception e) {
                 return new BaseResponse<>(new Date(), false, HttpStatus.BAD_REQUEST, e.getMessage());
